@@ -8,9 +8,10 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-Library the packages that you need
-```{r, include=FALSE}
+################
+Data cleaning
+################
+```{r}
 library(foreign)
 library(nnet)
 library(ggplot2)
@@ -44,7 +45,7 @@ library(MissMech)
 library(robustlmm)
 library(jtools)
 library(lmtest)
-#library(lmerTest)
+library(lmerTest)
 library(MuMIn)
 library(HLMdiag)
 library(Hmisc)
@@ -57,16 +58,23 @@ datPre = t(datPre)
 write.csv(datPre, "datPre.csv", row.names = FALSE)
 datPre = read.csv("datPre.csv", header = TRUE)
 head(datPre)
+dim(datPre)
 
-datPre = datPre[,c(1, 3, 7:18, 21:35, 38:45, 49:72, 78:80, 83, 85)]
+datPre = datPre[,c(1, 3, 7:18, 21:35, 38:45, 49:72, 78:80, 83, 85, 94)]
 datPre = data.frame(datPre)
 head(datPre)
-colnames(datPre) = c("ID", "Treatment", "Sec1Qa", "Sec1Qb", "Sec1Qc", "Sec1Qd", "Sec1Qe", "Sec1Qf", "Sec1Qg", "Sec1Qh", "Sec1Qi", "Sec1Qj", "Sec1Qk", "Sec1Ql", "Sec2Qa", "Sec2Qb", "Sec2Qc", "Sec2Qd", "Sec2Qe", "Sec2Qf", "Sec2Qg",  "Sec2Qh", "Sec2Qi", "Sec2Qj", "Sec2Qk", "Sec2Ql", "Sec2Qm", "Sec2Qn", "Sec2Qo", "Sec3Qa", "Sec3Qb", "Sec3Qc", "Sec3Qd", "Sec3Qe", "Sec3Qf", "Sec3Qg", "Sec3Qh", "Sec4QaA", "Sec4QaB", "Sec4QbA", "Sec4QbB", "Sec4QcA", "Sec4QcB", "Sec4QdA", "Sec4QdB", "Sec4QeA", "Sec4QeB", "Sec4QfA","Sec4QfB", "Sec4QgA", "Sec4QgB", "Sec4QhA", "Sec4QhB", "Sec4QiA", "Sec4QiB", "Sec4QjA", "Sec4QjB", "Sec4QkA", "Sec4QkB", "Sec4QlA", "Sec4QlB","Age", "Gender", "Eth", "Race", "Edu")
+
+colnames(datPre) = c("ID", "Treatment", "Sec1Qa", "Sec1Qb", "Sec1Qc", "Sec1Qd", "Sec1Qe", "Sec1Qf", "Sec1Qg", "Sec1Qh", "Sec1Qi", "Sec1Qj", "Sec1Qk", "Sec1Ql", "Sec2Qa", "Sec2Qb", "Sec2Qc", "Sec2Qd", "Sec2Qe", "Sec2Qf", "Sec2Qg",  "Sec2Qh", "Sec2Qi", "Sec2Qj", "Sec2Qk", "Sec2Ql", "Sec2Qm", "Sec2Qn", "Sec2Qo", "Sec3Qa", "Sec3Qb", "Sec3Qc", "Sec3Qd", "Sec3Qe", "Sec3Qf", "Sec3Qg", "Sec3Qh", "Sec4QaA", "Sec4QaB", "Sec4QbA", "Sec4QbB", "Sec4QcA", "Sec4QcB", "Sec4QdA", "Sec4QdB", "Sec4QeA", "Sec4QeB", "Sec4QfA","Sec4QfB", "Sec4QgA", "Sec4QgB", "Sec4QhA", "Sec4QhB", "Sec4QiA", "Sec4QiB", "Sec4QjA", "Sec4QjB", "Sec4QkA", "Sec4QkB", "Sec4QlA", "Sec4QlB","Age", "Gender", "Eth", "Race", "Edu", "Clinical_Staff")
 head(datPre)
 ### Get rif of first row once you figure out which variables to keep
 datPre = datPre[-1,]
 datPre = data.frame(datPre)
 head(datPre)
+
+#Only retain clincial staff 1
+datPre = subset(datPre, Clinical_Staff == 1)
+head(datPre)
+dim(datPre)
 
 setwd("P:/Evaluation/TN Lives Count_Writing/3_Target1_SUICClinicalTrainingComparison/3_Data & Analyses")
 datPost = read.csv("Post.csv", header = FALSE, row.names = NULL)
@@ -98,7 +106,12 @@ datPre = read.csv("datPre.csv", header = TRUE)
 
 write.csv(datPost, "datPost.csv", row.names = FALSE)
 datPost = read.csv("datPost.csv", header = TRUE)
-datPrePost = merge(datPre, datPost, by = "ID",  all = TRUE, sort = TRUE)
+
+#Should not have ID one, because they are the wrong code and not in datPre
+datPrePost = merge(datPre, datPost, by = "ID",  all.x = TRUE, sort = TRUE)
+
+
+
 
 dat3month = read.csv("3month.csv", header  = TRUE)
 head(dat3month)
