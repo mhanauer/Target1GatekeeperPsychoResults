@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ################
 Data cleaning
 ################
-```{r, include=FALSE}
+```{r}
 library(foreign)
 library(nnet)
 library(ggplot2)
@@ -50,6 +50,7 @@ library(HLMdiag)
 library(Hmisc)
 library(stargazer)
 library(paran)
+library(caret)
 
 setwd("P:/Evaluation/TN Lives Count_Writing/3_Target1_SUICClinicalTrainingComparison/3_Data & Analyses")
 datPre = read.csv("Pre.csv", header = FALSE, row.names = NULL)
@@ -259,26 +260,28 @@ datPrePost3month$Sec4QkB.x =  datPrePost3month$Sec4QkB.x-2.43
 datPrePost3month$Sec4QlA.x =  datPrePost3month$Sec4QlA.x-2.00 
 datPrePost3month$Sec4QlB.x =  datPrePost3month$Sec4QlB.x-3.00 
 
+
 head(datPrePost3month)
 
-datPrePost3monthSec1 = datPrePost3month[,c(9,10:21)]
+datPrePost3monthSec1 = datPrePost3month[,c(1,10:21)]
 datPrePost3monthSec1Psych = datPrePost3monthSec1
 
 head(datPrePost3monthSec1)
+
+#here
 describe.factor(datPrePost3monthSec1Psych$time)
-datPrePost3monthSec1Psych$time = NULL
+head(datPrePost3monthSec1Psych)
 
 datPrePost3monthSec1Psych = data.frame(datPrePost3monthSec1Psych)
 write.csv(datPrePost3monthSec1Psych, "datPrePost3monthSec1Psych.csv", row.names = FALSE)
 datPrePost3monthSec1Psych = read.csv("datPrePost3monthSec1Psych.csv", header = TRUE)
 
 head(datPrePost3month)
-datPrePost3monthSec2 = datPrePost3month[,c(9, 22:36)]
+datPrePost3monthSec2 = datPrePost3month[,c(1,22:36)]
 head(datPrePost3monthSec2)
 
 datPrePost3monthSec2Psych = datPrePost3monthSec2
 describe.factor(datPrePost3monthSec2Psych$time)
-datPrePost3monthSec2Psych$time = NULL
 
 head(datPrePost3monthSec2Psych)
 
@@ -288,7 +291,7 @@ datPrePost3monthSec2Psych = read.csv("datPrePost3monthSec2Psych.csv", header = T
 
 
 head(datPrePost3month)
-datPrePost3monthSec3 = datPrePost3month[,c(9, 37:44)]
+datPrePost3monthSec3 = datPrePost3month[,c(1, 37:44)]
 ### Need to get reverse scoring for A,C,E,G
 head(datPrePost3monthSec3)
 summary(datPrePost3monthSec3)
@@ -311,7 +314,7 @@ describe.factor(datPrePost3monthSec3$Sec3Qg.x)
 datPrePost3monthSec3Psych = datPrePost3monthSec3
 
 describe.factor(datPrePost3monthSec3Psych$time)
-datPrePost3monthSec3Psych$time = NULL
+
 
 datPrePost3monthSec3Psych = data.frame(datPrePost3monthSec3Psych)
 write.csv(datPrePost3monthSec3Psych, "datPrePost3monthSec3Psych.csv", row.names = FALSE)
@@ -319,102 +322,141 @@ datPrePost3monthSec3Psych = read.csv("datPrePost3monthSec3Psych.csv", header = T
 head(datPrePost3monthSec3Psych)
 
 head(datPrePost3month)
-datPrePost3monthSec4 = datPrePost3month[,c(9, 45:68)]
+datPrePost3monthSec4 = datPrePost3month[,c(1, 45:68)]
 head(datPrePost3monthSec4)
 
 datPrePost3monthSec4Psych = datPrePost3monthSec4
 
 describe.factor(datPrePost3monthSec4Psych$time)
-datPrePost3monthSec4Psych$time = NULL
 
 datPrePost3monthSec4Psych = data.frame(datPrePost3monthSec4Psych)
 write.csv(datPrePost3monthSec4Psych, "datPrePost3monthSec4Psych.csv", row.names = FALSE)
 datPrePost3monthSec4Psych = read.csv("datPrePost3monthSec4Psych.csv", header = TRUE)
 
 ```
+
+
+ID's are included so need to get rid of that value
+
 When there is a 1 in the variable that coorsponds to the items in section one.  For example, parallel1 and omegaSec1Base are both doing analyses with section one itmes
 
 
 Below are the omega values for each section of measures.  You can interpret omega values like Cronbach alpha.  See  Peters(2014): https://drive.google.com/open?id=1S5qnisksx5RXwE5qD9MH8MHq0LFkndgX
 ```{r}
-omegaSec1 = omega(datPrePost3monthSec1Psych)
+ 
+
+omegaSec1 = omega(datPrePost3monthSec1Psych[c(-1)])
 summary(omegaSec1)
 
-omegaSec2 =  omega(datPrePost3monthSec2Psych)
+omegaSec2 =  omega(datPrePost3monthSec2Psych[c(-1)])
 summary(omegaSec2)
 
-omegaSec3 =  omega(datPrePost3monthSec3Psych)
+omegaSec3 =  omega(datPrePost3monthSec3Psych[c(-1)])
 summary(omegaSec3)
 
-omegaSec4 =  omega(datPrePost3monthSec4Psych)
+omegaSec4 =  omega(datPrePost3monthSec4Psych[c(-1)])
 summary(omegaSec4)
-
 ```
 Correlation matrices for each item for each measure
 
 I used perason's correlation for the first, because they are all binary and when this happens pearson's approximates to the phi coefficient, which is what we want for correlations between binary variables.  I use spearman for the other measures, because those are ordinal.
 ```{r}
-summary(datPrePost3monthSec1)
-datPrePost3monthSec1 = as.matrix(datPrePost3monthSec1)
-datPrePost3monthSec2 = as.matrix(datPrePost3monthSec2)
-datPrePost3monthSec3 = as.matrix(datPrePost3monthSec3)
-datPrePost3monthSec4 = as.matrix(datPrePost3monthSec4)
+datPrePost3monthSec1PsychCor = datPrePost3monthSec1Psych[c(-1)]
+datPrePost3monthSec1PsychCor = as.matrix(datPrePost3monthSec1PsychCor)
 
-rcorr(datPrePost3monthSec1)
-rcorr(datPrePost3monthSec2, type = "spearman")
-rcorr(datPrePost3monthSec3, type = "spearman")
-rcorr(datPrePost3monthSec4, type = "spearman")
+datPrePost3monthSec2PsychCor = datPrePost3monthSec2Psych[c(-1)]
+datPrePost3monthSec2PsychCor = as.matrix(datPrePost3monthSec2PsychCor)
+
+datPrePost3monthSec3PsychCor = datPrePost3monthSec3Psych[c(-1)]
+datPrePost3monthSec3PsychCor = as.matrix(datPrePost3monthSec3PsychCor)
+
+datPrePost4monthSec4PsychCor = datPrePost3monthSec4Psych[c(-1)]
+datPrePost4monthSec4PsychCor = as.matrix(datPrePost4monthSec4PsychCor)
+
+rcorr(datPrePost3monthSec1PsychCor)
+rcorr(datPrePost3monthSec2PsychCor, type = "spearman")
+rcorr(datPrePost3monthSec3PsychCor, type = "spearman")
+rcorr(datPrePost4monthSec4PsychCor, type = "spearman")
 
 ```
-
-
-
-
 Now we have the parallel analyses for all four measures.  I am using factor analysis instead of principal component, because factor analysis assumes some error in the measurement, which seems like a better assumption for us.
 
 I have some problems with the parrell analysis particularly with measure two, because the first eigenvalue is 8 and the second is less than .1 and it says that four factors should be retained, which seems ridiculous.
 ```{r}
-datPrePost3monthSec1BaseComplete = na.omit(datPrePost3monthSec1Base)
-paran(x = datPrePost3monthSec1BaseComplete, centile = 95, iterations = 1000, graph = TRUE, cfa = TRUE)
+datPrePost3monthSec1PsychComplete = na.omit(datPrePost3monthSec1Psych)
+paran(x = datPrePost3monthSec1PsychComplete, centile = 95, iterations = 1000, graph = TRUE, cfa = TRUE)
 
-datPrePost3monthSec2BaseComplete = na.omit(datPrePost3monthSec2Base)
-paran(x = datPrePost3monthSec2BaseComplete, centile = 95, iterations = 1000, graph = TRUE, cfa = TRUE)
+datPrePost3monthSec2PsychComplete = na.omit(datPrePost3monthSec2Psych)
+paran(x = datPrePost3monthSec2PsychComplete, centile = 95, iterations = 1000, graph = TRUE, cfa = TRUE)
 
-datPrePost3monthSec3BaseComplete = na.omit(datPrePost3monthSec3Base)
-paran(x = datPrePost3monthSec3BaseComplete, centile = 95, iterations = 1000, graph = TRUE, cfa = TRUE)
+datPrePost3monthSec3PsychComplete = na.omit(datPrePost3monthSec3Psych)
+paran(x = datPrePost3monthSec3PsychComplete, centile = 95, iterations = 1000, graph = TRUE, cfa = TRUE)
 
-datPrePost3monthSec4BaseComplete = na.omit(datPrePost3monthSec4Base)
-paran(x = datPrePost3monthSec4BaseComplete, centile = 95, iterations = 1000, graph = TRUE, cfa = TRUE)
+datPrePost3monthSec4PsychComplete = na.omit(datPrePost3monthSec4Psych)
+paran(x = datPrePost3monthSec4PsychComplete, centile = 95, iterations = 1000, graph = TRUE, cfa = TRUE)
 
 ```
 Now I am trying the MAP and VSS tests.  It seems like it produces the MAP test, with this statement. "The Velicer MAP achieves a minimum of".  
 I am also limiting it to four possible factors instead of the default eight, because the output is too unwelidly.
 ```{r}
-vss(datPrePost3monthSec1Base, n = 4)
-vss(datPrePost3monthSec2Base, n = 4)
-vss(datPrePost3monthSec3Base, n = 4)
-vss(datPrePost3monthSec4Base, n = 4)
+vss(datPrePost3monthSec1Psych, n = 4)
+vss(datPrePost3monthSec2Psych, n = 4)
+vss(datPrePost3monthSec3Psych, n = 4)
+vss(datPrePost3monthSec4Psych, n = 4)
 ```
+Get a sample to run the EFA on
+N is the same for all data sets so you are fine just selecting one
+```{r}
+n = dim(datPrePost3monthSec2Psych)[1]
+
+datPrePost3monthSec1Psych$id = 1:n
+datPrePost3monthSec2Psych$id = 1:n
+datPrePost3monthSec3Psych$id = 1:n
+datPrePost3monthSec4Psych$id = 1:n
+
+
+Sec1Psych = createDataPartition(y = datPrePost3monthSec1Psych$id, p = .5, list = FALSE)
+Sec2Psych = createDataPartition(y = datPrePost3monthSec2Psych$id, p = .5, list = FALSE)
+Sec3Psych = createDataPartition(y = datPrePost3monthSec3Psych$id, p = .5, list = FALSE)
+Sec4Psych = createDataPartition(y = datPrePost3monthSec4Psych$id, p = .5, list = FALSE)
+
+Sec1PsychEFA = datPrePost3monthSec1Psych[Sec1Psych,]
+Sec1PsychCFA = datPrePost3monthSec1Psych[-Sec1Psych,]
+
+Sec1PsychEFA = datPrePost3monthSec1Psych[Sec1Psych,]
+Sec1PsychCFA = datPrePost3monthSec1Psych[-Sec1Psych,]
+
+Sec2PsychEFA = datPrePost3monthSec2Psych[Sec2Psych,]
+Sec2PsychCFA = datPrePost3monthSec2Psych[-Sec2Psych,]
+
+Sec3PsychEFA = datPrePost3monthSec3Psych[Sec3Psych,]
+Sec3PsychCFA = datPrePost3monthSec3Psych[-Sec3Psych,]
+
+Sec4PsychEFA = datPrePost3monthSec4Psych[Sec4Psych,]
+Sec4PsychCFA = datPrePost3monthSec4Psych[-Sec4Psych,]
+```
+
+
+
 Use GLS, because that is better for ordinal data (doesn't assume data is continous, more interations, no more than 3 factors, we get heywood cases), missing equals true is median.  Use cor equals poly, because data is ordinal 
 
 Positive definite problems ok happens with polychoric correlations: https://personality-project.org/r/html/cor.smooth.html
 ```{r}
-
-Sec1 <- fa(r = datPrePost3monthSec1Base, nfactors = 3, n.iter = 1000, fm = "gls", missing = TRUE, impute = "median", cor = "poly")
+Sec1 <- fa(r = datPrePost3monthSec1Psych, nfactors = 3, n.iter = 100, fm = "gls", missing = TRUE, impute = "median", cor = "poly")
 Sec1
 fa.diagram(Sec1)
 
 # Should use GLS, but it takes way too long
-Sec2 <- fa(r = datPrePost3monthSec2Base, nfactors = 3, n.iter = 100, missing = TRUE, impute = "median", cor = "poly")
+Sec2 <- fa(r = datPrePost3monthSec2Psych, nfactors = 3, n.iter = 100, missing = TRUE, impute = "median", cor = "poly")
 Sec2
 fa.diagram(Sec2)
 
-Sec3 <- fa(r = datPrePost3monthSec3Base, nfactors = 3, n.iter = 100, fm = "gls", missing = TRUE, impute = "median", cor = "poly")
+Sec3 <- fa(r = datPrePost3monthSec3Psych, nfactors = 3, n.iter = 100, fm = "gls", missing = TRUE, impute = "median", cor = "poly")
 Sec3
 fa.diagram(Sec3)
 
 # Responses are somewhat continious the defaults will work
-Sec4 <- fa(r = datPrePost3monthSec4Base, nfactors = 4, n.iter = 100, missing = TRUE, impute = "median")
+Sec4 <- fa(r = datPrePost3monthSec4Psych, nfactors = 4, n.iter = 100, missing = TRUE, impute = "median")
 Sec4
 fa.diagram(Sec4)
 ```
