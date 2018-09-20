@@ -24,7 +24,6 @@ library(mitools)
 library(BaylorEdPsych)
 library(openxlsx)
 library(lavaan)
-library(lavaan)
 library(psych)
 library(semTools)
 library(dplyr)
@@ -264,28 +263,26 @@ head(datPrePost3month)
 
 datPrePost3monthSec1 = datPrePost3month[,c(9,10:21)]
 head(datPrePost3monthSec1)
-datPrePost3monthSec1Base = subset(datPrePost3monthSec1, time == 0)
-describe.factor(datPrePost3monthSec1Base$time)
-datPrePost3monthSec1Base$time = NULL
+describe.factor(datPrePost3monthSec1Psych$time)
+datPrePost3monthSec1Psych$time = NULL
 
-datPrePost3monthSec1Base = data.frame(datPrePost3monthSec1Base)
-write.csv(datPrePost3monthSec1Base, "datPrePost3monthSec1Base.csv", row.names = FALSE)
-datPrePost3monthSec1Base = read.csv("datPrePost3monthSec1Base.csv", header = TRUE)
+datPrePost3monthSec1Psych = data.frame(datPrePost3monthSec1Psych)
+write.csv(datPrePost3monthSec1Psych, "datPrePost3monthSec1Psych.csv", row.names = FALSE)
+datPrePost3monthSec1Psych = read.csv("datPrePost3monthSec1Psych.csv", header = TRUE)
 
 head(datPrePost3month)
 datPrePost3monthSec2 = datPrePost3month[,c(9, 22:36)]
 head(datPrePost3monthSec2)
 
 
-datPrePost3monthSec2Base = subset(datPrePost3monthSec2, time == 0)
-describe.factor(datPrePost3monthSec2Base$time)
-datPrePost3monthSec2Base$time = NULL
+describe.factor(datPrePost3monthSec2Psych$time)
+datPrePost3monthSec2Psych$time = NULL
 
-head(datPrePost3monthSec2Base)
+head(datPrePost3monthSec2Psych)
 
-datPrePost3monthSec2Base = data.frame(datPrePost3monthSec2Base)
-write.csv(datPrePost3monthSec2Base, "datPrePost3monthSec2Base.csv", row.names = FALSE)
-datPrePost3monthSec2Base = read.csv("datPrePost3monthSec2Base.csv", header = TRUE)
+datPrePost3monthSec2Psych = data.frame(datPrePost3monthSec2Psych)
+write.csv(datPrePost3monthSec2Psych, "datPrePost3monthSec2Psych.csv", row.names = FALSE)
+datPrePost3monthSec2Psych = read.csv("datPrePost3monthSec2Psych.csv", header = TRUE)
 
 
 head(datPrePost3month)
@@ -309,59 +306,60 @@ datPrePost3monthSec3$Sec3Qg.x = ifelse(datPrePost3monthSec3$Sec3Qg.x == 1, 5, if
 describe.factor(datPrePost3monthSec3$Sec3Qg.x)
 
 
-datPrePost3monthSec3Base = subset(datPrePost3monthSec3, time == 0)
-describe.factor(datPrePost3monthSec3Base$time)
-datPrePost3monthSec3Base$time = NULL
 
-datPrePost3monthSec3Base = data.frame(datPrePost3monthSec3Base)
-write.csv(datPrePost3monthSec3Base, "datPrePost3monthSec3Base.csv", row.names = FALSE)
-datPrePost3monthSec3Base = read.csv("datPrePost3monthSec3Base.csv", header = TRUE)
-head(datPrePost3monthSec3Base)
+
+describe.factor(datPrePost3monthSec3Psych$time)
+datPrePost3monthSec3Psych$time = NULL
+
+datPrePost3monthSec3Psych = data.frame(datPrePost3monthSec3Psych)
+write.csv(datPrePost3monthSec3Psych, "datPrePost3monthSec3Psych.csv", row.names = FALSE)
+datPrePost3monthSec3Psych = read.csv("datPrePost3monthSec3Psych.csv", header = TRUE)
+head(datPrePost3monthSec3Psych)
 
 head(datPrePost3month)
 datPrePost3monthSec4 = datPrePost3month[,c(9, 45:68)]
 head(datPrePost3monthSec4)
 
-datPrePost3monthSec4Base = subset(datPrePost3monthSec4, time == 0)
-describe.factor(datPrePost3monthSec4Base$time)
-datPrePost3monthSec4Base$time = NULL
+describe.factor(datPrePost3monthSec4Psych$time)
+datPrePost3monthSec4Psych$time = NULL
 
-datPrePost3monthSec4Base = data.frame(datPrePost3monthSec4Base)
-write.csv(datPrePost3monthSec4Base, "datPrePost3monthSec4Base.csv", row.names = FALSE)
-datPrePost3monthSec4Base = read.csv("datPrePost3monthSec4Base.csv", header = TRUE)
+datPrePost3monthSec4Psych = data.frame(datPrePost3monthSec4Psych)
+write.csv(datPrePost3monthSec4Psych, "datPrePost3monthSec4Psych.csv", row.names = FALSE)
+datPrePost3monthSec4Psych = read.csv("datPrePost3monthSec4Psych.csv", header = TRUE)
+
 ```
 When there is a 1 in the variable that coorsponds to the items in section one.  For example, parallel1 and omegaSec1Base are both doing analyses with section one itmes
 
 
 Below are the omega values for each section of measures.  You can interpret omega values like Cronbach alpha.  See  Peters(2014): https://drive.google.com/open?id=1S5qnisksx5RXwE5qD9MH8MHq0LFkndgX
 ```{r}
-omegaSec1Base = omega(datPrePost3monthSec1Base)
-summary(omegaSec1Base)
+omegaSec1 = omega(datPrePost3monthSec1Psych)
+summary(omegaSec1)
 
-omegaSec2Base =  omega(datPrePost3monthSec2Base)
-summary(omegaSec2Base)
+omegaSec2 =  omega(datPrePost3monthSec2Psych)
+summary(omegaSec2)
 
-omegaSec3Base =  omega(datPrePost3monthSec3Base)
-summary(omegaSec3Base)
+omegaSec3 =  omega(datPrePost3monthSec3Psych)
+summary(omegaSec3)
 
-omegaSec4Base =  omega(datPrePost3monthSec4Base)
-summary(omegaSec4Base)
+omegaSec4 =  omega(datPrePost3monthSec4Psych)
+summary(omegaSec4)
 
 ```
 Correlation matrices for each item for each measure
 
 I used perason's correlation for the first, because they are all binary and when this happens pearson's approximates to the phi coefficient, which is what we want for correlations between binary variables.  I use spearman for the other measures, because those are ordinal.
 ```{r}
-summary(datPrePost3monthSec1Base)
-datPrePost3monthSec1Base = as.matrix(datPrePost3monthSec1Base)
-datPrePost3monthSec2Base = as.matrix(datPrePost3monthSec2Base)
-datPrePost3monthSec3Base = as.matrix(datPrePost3monthSec3Base)
-datPrePost3monthSec4Base = as.matrix(datPrePost3monthSec4Base)
+summary(datPrePost3monthSec1)
+datPrePost3monthSec1 = as.matrix(datPrePost3monthSec1)
+datPrePost3monthSec2 = as.matrix(datPrePost3monthSec2)
+datPrePost3monthSec3 = as.matrix(datPrePost3monthSec3)
+datPrePost3monthSec4 = as.matrix(datPrePost3monthSec4)
 
-rcorr(datPrePost3monthSec1Base)
-rcorr(datPrePost3monthSec2Base, type = "spearman")
-rcorr(datPrePost3monthSec3Base, type = "spearman")
-rcorr(datPrePost3monthSec4Base, type = "spearman")
+rcorr(datPrePost3monthSec1)
+rcorr(datPrePost3monthSec2, type = "spearman")
+rcorr(datPrePost3monthSec3, type = "spearman")
+rcorr(datPrePost3monthSec4, type = "spearman")
 
 ```
 
