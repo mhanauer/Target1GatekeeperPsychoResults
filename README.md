@@ -520,7 +520,7 @@ Now IRT for measure two
 Needed to get rid of item D, because there is no response for 1
 ```{r}
 
-Sec2IRT =  Sec2PsychCFA[c(-1)]
+Sec2IRT =  datPrePost3monthSec2Psych[c(-1)]
 
 Sec2IRT$Sec2Qd.x = NULL
 describe(Sec2IRT)
