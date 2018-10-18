@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ################
 Data cleaning
-################
+###############
 ```{r}
 library(foreign)
 library(nnet)
