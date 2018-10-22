@@ -259,7 +259,7 @@ datPrePost3monthComplete$NAs = apply(datPrePost3monthComplete, 1, sum)
 datPrePost3monthComplete$NAs = datPrePost3monthComplete$NAs / dim(datPrePost3monthComplete)[2]
 describe.factor(datPrePost3monthComplete$NAs)
 datPrePost3monthComplete$NAs = ifelse(datPrePost3monthComplete$NAs >= .7, 0,1)
-
+datPrePost3monthComplete = subset(datPrePost3monthComplete, NAs == 1)
 dim(datPrePost3monthComplete)
 dim(datPrePost3monthComplete)[1] / dim(datPrePost3month)[1]
 
