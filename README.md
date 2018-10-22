@@ -254,21 +254,27 @@ datPrePost3month$Sec4QlB.x =  datPrePost3month$Sec4QlB.x-3.00
 
 ## Now I am getting rid of any data that is missing more than 70% of data
 head(datPrePost3month)
-datPrePost3month = data.frame(is.na(datPrePost3month))
-datPrePost3month$NAs = apply(datPrePost3month, 1, sum)
-datPrePost3month$NAs = datPrePost3month$NAs / dim(datPrePost3month)[2]
-describe.factor(datPrePost3month$NAs)
-datPrePost3month = subset(datPrePost3month, NAs < .7)
-dim(datPrePost3month)
-datPrePost3month$NAs = NULL
+datPrePost3monthComplete = data.frame(is.na(datPrePost3month))
+datPrePost3monthComplete$NAs = apply(datPrePost3monthComplete, 1, sum)
+datPrePost3monthComplete$NAs = datPrePost3monthComplete$NAs / dim(datPrePost3monthComplete)[2]
+describe.factor(datPrePost3monthComplete$NAs)
+datPrePost3monthComplete$NAs = ifelse(datPrePost3monthComplete$NAs >= .7, 0,1)
 
+dim(datPrePost3monthComplete)
+dim(datPrePost3monthComplete)[1] / dim(datPrePost3month)[1]
+
+# I need to grab the NAs variable put it into the full data set, then create two data sets and dim them one with all the data and one without all the data, then use na.omit later
+datPrePost3month$NAs =datPrePost3monthComplete$NAs 
+datPrePost3monthComplete = subset(datPrePost3month, NAs == 1)
+dim(datPrePost3monthComplete)[1]/dim(datPrePost3month)[1]
+datPrePost3month = datPrePost3monthComplete
+datPrePost3month$NAs = NULL
 
 head(datPrePost3month)
 
 datPrePost3monthSec1 = datPrePost3month[,c(1,10:21)]
 datPrePost3monthSec1Psych = datPrePost3monthSec1
 
-head(datPrePost3monthSec1)
 
 #here
 describe.factor(datPrePost3monthSec1Psych$time)
