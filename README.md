@@ -259,17 +259,14 @@ datPrePost3monthComplete$NAs = apply(datPrePost3monthComplete, 1, sum)
 datPrePost3monthComplete$NAs = datPrePost3monthComplete$NAs / dim(datPrePost3monthComplete)[2]
 describe.factor(datPrePost3monthComplete$NAs)
 datPrePost3monthComplete$NAs = ifelse(datPrePost3monthComplete$NAs >= .7, 0,1)
-datPrePost3monthComplete = subset(datPrePost3monthComplete, NAs == 1)
-dim(datPrePost3monthComplete)
-dim(datPrePost3monthComplete)[1] / dim(datPrePost3month)[1]
+
 
 # I need to grab the NAs variable put it into the full data set, then create two data sets and dim them one with all the data and one without all the data, then use na.omit later
-datPrePost3month$NAs =datPrePost3monthComplete$NAs 
+datPrePost3month$NAs = datPrePost3monthComplete$NAs 
 datPrePost3monthComplete = subset(datPrePost3month, NAs == 1)
 dim(datPrePost3monthComplete)[1]/dim(datPrePost3month)[1]
 datPrePost3month = datPrePost3monthComplete
 datPrePost3month$NAs = NULL
-
 head(datPrePost3month)
 
 datPrePost3monthSec1 = datPrePost3month[,c(1,10:21)]
