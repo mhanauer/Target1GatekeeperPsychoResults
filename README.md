@@ -1252,7 +1252,7 @@ model3Try2 = 'F1 =~ Sec3Qa.x +  + Sec3Qc.x + Sec3Qd.x +Sec3Qg.x
 
 fit3Try2 = cfa(model3Try2, estimator = "MLR",  missing = "ML", data = Sec3PsychCFA[c(-1)])
 summary(fit3Try2, fit.measures = TRUE, standardized = TRUE)
-
+#
 ```{r}
 datMI_M3 = datPrePost3monthSec3Psych
 
