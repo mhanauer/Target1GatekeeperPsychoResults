@@ -25,15 +25,13 @@ library(BaylorEdPsych)
 library(openxlsx)
 library(lavaan)
 library(psych)
-library(semTools)
+#library(semTools)
 library(dplyr)
 library(ltm)
 library(prettyR)
-library(semTools)
 library(GPArotation)
 library(lavaan)
 library(psych)
-library(semTools)
 library(dplyr)
 library(ltm)
 library(lordif)
@@ -353,6 +351,7 @@ datPrePost3monthSec3F1Psych = datPrePost3monthSec3Psych[c("Sec3Qa.x", "Sec3Qc.x"
 datPrePost3monthSec3F2Psych = datPrePost3monthSec3Psych[c("Sec3Qe.x", "Sec3Qf.x", "Sec3Qb.x")]
 
 # need to get rid of rows with 70% or more missing data or entire measure
+s= 5
 
 ```
 Descriptives
@@ -363,6 +362,10 @@ describe.factor(datPrePost3month$time)
 datPrePost3month_complete = na.omit(datPrePost3month)
 1-(dim(datPrePost3month_complete)/dim(datPrePost3month))
 colSums(is.na(datPrePost3month))/dim(datPrePost3month)[1]
+
+datPrePost3month_pre = subset(datPrePost3month, time == 0)
+
+describe(datPrePost3month_pre)
 
 ```
 ID's are included so need to get rid of that value
@@ -771,15 +774,12 @@ library(BaylorEdPsych)
 library(openxlsx)
 library(lavaan)
 library(psych)
-library(semTools)
 library(dplyr)
 library(ltm)
 library(prettyR)
-library(semTools)
 library(GPArotation)
 library(lavaan)
 library(psych)
-library(semTools)
 library(dplyr)
 library(ltm)
 library(lordif)
@@ -1130,8 +1130,6 @@ describe(datPrePost3monthSe3PsychBase)
 apply(datPrePost3monthSe3PsychBase, 2,sd, na.rm = TRUE)
 
 ```
-
-
 Now DIFF for Measure 2
 
 Need to drop those who responded one to any of the items for measure two.
@@ -1143,8 +1141,6 @@ datIRT_M2 = datPrePost3monthSec2Psych
 datIRT_M2Descript = datIRT_M2[c(1:5)]
 
 datIRT_M2Items = datIRT_M2[c(6:20)]
-
-datIRT_M2Items = data.frame(apply(datIRT_M2Items, 2, function(x){ifelse(x == 1, NA, x)}))
 
 
 genderM2_DIF = lordif(resp.data = datIRT_M2Items, group = datIRT_M2Descript$Gender, criterion = "Chisqr", alpha = .01, minCell = 5, MonteCarlo = TRUE)
@@ -1231,7 +1227,7 @@ summary(raceM3_DIF)
 plot(raceM3_DIF)
 
 
-timeM3_DIF = lordif(resp.data = datIRT_M3Items, group = datIRT_M3Descript$time, criterion = "Chisqr", alpha = .01, minCell = 5)
+timeM3_DIF = lordif(resp.data = datIRT_M3Items, group = datIRT_M3Descript$time, criterion = "Chisqr", alpha = .01, minCell = 5, MonteCarlo = TRUE)
 summary(timeM3_DIF)
 plot(timeM3_DIF)
 ```
